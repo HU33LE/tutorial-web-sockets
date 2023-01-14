@@ -36,15 +36,13 @@ function manejarMensajesNuevosDe(cliente) {
 }
 
 function retirarCliente(cliente) {
-    return () => {
-        clientes = clientes.filter((_cliente) => {
-            return _cliente.id != cliente.id
-        })
-        
-        clientes.forEach((_cliente) => {
-            _cliente.send(`${cliente.id} ha abandonado el chat`)
-        })
-    }
+    clientes = clientes.filter((_cliente) => {
+        return _cliente.id != cliente.id
+    })
+
+    clientes.forEach((_cliente) => {
+        _cliente.send(`${cliente.id} ha abandonado el chat`)
+    })
 }
 
 socketServer.on('connection', (cliente) => {
@@ -52,7 +50,7 @@ socketServer.on('connection', (cliente) => {
 
     cliente.on("message", manejarMensajesNuevosDe(cliente))
 
-    cliente.on("close", retirarCliente(cliente))
+    cliente.on("close", retirarCliente)
 })
 
 app.use(express.static(path.join(__dirname, "./public")))

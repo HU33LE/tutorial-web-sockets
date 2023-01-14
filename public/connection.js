@@ -1,41 +1,41 @@
 const PORT = 3000
 const socket = new WebSocket(`ws://localhost:${PORT}`)
 
-const messagesBox = document.getElementById("messages")
-const newMessage = document.getElementById("new-message")
-const sendButton = document.getElementById("send-message")
+const cajaMensajes = document.getElementById("messages")
+const mensajeNuevo = document.getElementById("new-message")
+const botonEnviar = document.getElementById("send-message")
 
-function sendMessage() {
-    const message = newMessage.value
+function enviarMensaje() {
+    const mensaje = mensajeNuevo.value
 
-    socket.send(message)
+    socket.send(mensaje)
 
-    newMessage.value = ""
-    appendMessage(`Tú: ${message}`)
+    mensajeNuevo.value = ""
+    renderizarMensaje(`Tú: ${mensaje}`)
 }
 
-function appendMessage(message) {
-    messagesBox.value += `${message}\n`
+function renderizarMensaje(mensaje) {
+    cajaMensajes.value += `${mensaje}\n`
 }
 
-sendButton.addEventListener("click", sendMessage)
-newMessage.addEventListener("keyup", (evt) => {
+botonEnviar.addEventListener("click", enviarMensaje)
+mensajeNuevo.addEventListener("keyup", (evt) => {
     const key = evt.code
 
     if (key == "Enter") {
-        sendMessage()
+        enviarMensaje()
     }
 })
 
 socket.addEventListener("open", () => {
-    sendButton.disabled = false
+    botonEnviar.disabled = false
 })
 
 socket.addEventListener("message", (evt) => {
-    appendMessage(evt.data)
+    renderizarMensaje(evt.data)
 })
 
 socket.addEventListener("close", () => {
-    appendMessage("Has abandonado la conversación")
-    sendButton.disabled = true
+    renderizarMensaje("Has abandonado la conversación")
+    botonEnviar.disabled = true
 })
