@@ -52,18 +52,7 @@ function cambiarUsername() {
     socket.send(mensaje.toString())
 }
 
-botonEnviar.addEventListener("click", enviarMensaje)
-mensajeNuevo.addEventListener("keyup", (evt) => {
-    const key = evt.code
-
-    if (key == "Enter") {
-        enviarMensaje()
-    }
-})
-
-username.addEventListener("blur", cambiarUsername)
-
-botonConexion.addEventListener("click", () => {
+function manejarConexion() {
     let mensaje = new Mensaje()
 
     if (estaConectado) {
@@ -87,7 +76,20 @@ botonConexion.addEventListener("click", () => {
     estaConectado = !estaConectado
 
     socket.send(mensaje.toString())
+}
+
+botonEnviar.addEventListener("click", enviarMensaje)
+mensajeNuevo.addEventListener("keyup", (evt) => {
+    const key = evt.code
+
+    if (key == "Enter") {
+        enviarMensaje()
+    }
 })
+
+username.addEventListener("blur", cambiarUsername)
+
+botonConexion.addEventListener("click", manejarConexion)
 
 socket.addEventListener("message", (evt) => {
     const mensaje = new Mensaje(evt.data)

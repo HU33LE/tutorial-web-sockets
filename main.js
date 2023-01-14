@@ -116,18 +116,12 @@ function manejarMensajesNuevosDe(cliente) {
     }
 }
 
-function retirarCliente(cliente) {
-    return () => {
-        desconectarCliente(cliente)
-    }
-}
-
 socketServer.on('connection', (cliente) => {
     cliente = registrarNuevoCliente(cliente)
 
     cliente.on("message", manejarMensajesNuevosDe(cliente))
 
-    cliente.on("close", retirarCliente(cliente))
+    cliente.on("close", desconectarCliente)
 })
 
 app.use(express.static(path.join(__dirname, "./public")))
