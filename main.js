@@ -17,6 +17,7 @@ let clientes = []
 
 function registrarNuevoCliente(cliente) {
     cliente.id = generarId()
+    cliente.estaConectado = false
     return cliente
 }
 
@@ -121,7 +122,9 @@ socketServer.on('connection', (cliente) => {
 
     cliente.on("message", manejarMensajesNuevosDe(cliente))
 
-    cliente.on("close", desconectarCliente)
+    cliente.on("close", () => {
+        desconectarCliente(cliente)
+    })
 })
 
 app.use(express.static(path.join(__dirname, "./public")))

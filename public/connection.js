@@ -9,7 +9,7 @@ const cajaMensajes = document.getElementById("messages")
 const mensajeNuevo = document.getElementById("new-message")
 const botonEnviar  = document.getElementById("send-message")
 const botonConexion = document.getElementById("toggle-connection")
-const username = document.getElementById("username")
+const username = document.getElementById("usuario")
 
 function enviarMensaje() {
     if (!estaConectado || mensajeNuevo.value == "") {
@@ -61,6 +61,7 @@ function manejarConexion() {
         renderizarMensaje("Has abandonado la conversación")
         botonEnviar.disabled = true
         botonConexion.textContent = "Conectarse"
+        username.classList.remove("connected")
     } else {
         if (username.value == "") {
             return
@@ -71,6 +72,7 @@ function manejarConexion() {
 
         botonEnviar.disabled = false
         botonConexion.textContent = "Desconectarse"
+        username.classList.add("connected")
     }
 
     estaConectado = !estaConectado
