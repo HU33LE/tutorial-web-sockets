@@ -9,6 +9,7 @@ const cajaMensajes = document.getElementById("messages")
 const mensajeNuevo = document.getElementById("new-message")
 const botonEnviar  = document.getElementById("send-message")
 const botonConexion = document.getElementById("toggle-connection")
+const messageBox = document.getElementById("message-box")
 const username = document.getElementById("usuario")
 
 function enviarMensaje() {
@@ -24,11 +25,17 @@ function enviarMensaje() {
     socket.send(mensaje.toString())
 
     mensajeNuevo.value = ""
-    renderizarMensaje(`Tú: ${contenido}`)
+    renderizarMensaje(`${contenido}`, 'self')
 }
 
-function renderizarMensaje(mensaje) {
-    cajaMensajes.value += `${mensaje}\n`
+function renderizarMensaje(mensaje, className) {
+    cajaMensajes.value += `${mensaje}\n`;
+    const p = document.createElement('p');
+    const div = document.createElement('div');
+    p.innerText = mensaje;
+    div.appendChild(p);
+    div.classList.add(className,'message');
+    messageBox.appendChild(div);
 }
 
 function generarUsername() {
@@ -58,7 +65,7 @@ function manejarConexion() {
     if (estaConectado) {
         mensaje.accion = DESCONECTAR
 
-        renderizarMensaje("Has abandonado la conversación")
+        renderizarMensaje("Has abandonado la conversación", 'info')
         botonEnviar.disabled = true
         botonConexion.textContent = "Conectarse"
         username.classList.remove("connected")
@@ -95,7 +102,7 @@ botonConexion.addEventListener("click", manejarConexion)
 
 socket.addEventListener("message", (evt) => {
     const mensaje = new Mensaje(evt.data)
-    renderizarMensaje(mensaje.data)
+    renderizarMensaje(mensaje.data, 'other')
 })
 
 generarUsername()

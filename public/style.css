@@ -9,6 +9,15 @@
 
     --font-size: 1.5rem;
     --font-size-small: .9rem;
+
+    --color-page-bg: #c2d5ee;
+    --color-chat-bg: #a6bcd8;
+    --color-chat-input-bg: #8ca2c0;
+    --color-message-bg: #657d9e;
+    --color-chat-button-bg: #4d6688;
+    --color-connect-state-bg: rgba(192, 191, 222, 0.34);;
+    --color-header-bg: #415a77a8;
+    --border-radius: 16px;
 }
 
 * {
@@ -19,7 +28,7 @@
 }
 
 body {
-    background-color: var(--paleta1-dark-blue);
+    background-color: var(--color-page-bg);
 }
 
 .container {
@@ -31,34 +40,50 @@ body {
     flex-direction: column;
 }
 
+.chat-wrapper {
+    position: relative;
+    background-color: var(--color-chat-bg);
+    width: 100vw;
+    max-width: 600px;
+    border-radius: var(--border-radius);
+    padding: 8px;
+}
+
 .username-container {
-    width: 90%;
-    border-bottom: .15rem solid;
-    border-color: var(--paleta1-dark-blue);
-    background-color: var(--paleta1-medium-blue);
+    width: 100%;
+    height: 40px;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+
+    background-color: var(--color-header-bg);
     display: flex;
     flex-direction: row;
+    align-items: stretch;
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+    backdrop-filter: blur(4px);
 
-    border-radius: .5rem .5rem 0 0;
 }
 
 .username {
     border-radius: .5rem 0 0 0;
     border: none;
-    border-left: solid 1rem var(--red-color);
+    flex-grow: 1;
+    border-right: solid 0.5rem var(--red-color);
 
-    background-color: var(--paleta1-medium-blue);
-    height: 1.5rem;
+
+    background-color: transparent;
     padding: 0 1rem;
 
-    caret-color: var(--paleta1-light-color);
+    
 
     font-size: var(--font-size-small);
     color: var(--paleta1-light-color);
 }
 
 .username.connected {
-    border-left: solid 1rem var(--green-color);
+    border-right: solid 0.5rem var(--green-color);
 }
 
 .username:focus-visible {
@@ -69,19 +94,17 @@ body {
     -moz-box-shadow: none;
     box-shadow: none;
 
-    border: none;
+
     background-color: var(--paleta1-light-blue);
 }
 
 .connection {
     margin-left: auto;
+    height: 100%;
+    background-color: var(--paleta1-medium-blue);
 
-    background-color: var(--paleta1-light-blue);
+    color: white;
 
-    font-size: var(--font-size-small);
-    color: var(--paleta1-light-color);
-
-    height: 1.5rem;
 
     border: none;
     border-radius: 0 .5rem 0 0;
@@ -92,11 +115,35 @@ body {
 }
 
 .connection:hover {
-    background-color: var(--paleta1-medium-blue);
+    background-color: var(--color-chat-button-bg);
+
     cursor: pointer;
 }
 
+#message-box {
+    height: 50vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow-y: hidden;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+.self.message {
+    text-align: right;
+}
+
+.message {
+    display: inline;
+    padding: 8px;
+    border-radius: var(--border-radius);
+}
+
 .msg-box, .msg-box:focus-visible {
+    width: 100%;
+    background-color: transparent;
     border: none;
     overflow: auto;
     outline: none;
@@ -105,10 +152,10 @@ body {
     -moz-box-shadow: none;
     box-shadow: none;
 
-    width: 90%;
+   
     height: 50vh;
     resize: none;
-    background-color: var(--paleta1-light-blue);
+
     color: var(--paleta1-light-color);
 
     font-size: var(--font-size);
@@ -119,26 +166,24 @@ body {
 }
 
 .new-msg-container {
-    width: 90%;
-    border-top: .15rem solid;
-    border-color: var(--paleta1-dark-blue);
-    background-color: var(--paleta1-dark-blue);
+    
     display: flex;
+    border-radius: var(--border-radius);
+    padding: 8px;
+    border-color: var(--paleta1-dark-blue);
+    background-color: var(--color-chat-input-bg);
 }
 
 .new-msg {
     flex: 1;
+    background-color: transparent;
+    border:none;
 
-    border-radius: 0 0 0 .5rem;
-    border: none;
-
-    background-color: var(--paleta1-medium-blue);
     height: 3rem;
     padding: .25rem 1rem;
 
     caret-color: var(--paleta1-light-color);
 
-    font-size: var(--font-size);
     color: var(--paleta1-light-color);
 }
 
@@ -150,20 +195,18 @@ body {
     -moz-box-shadow: none;
     box-shadow: none;
 
-    border: none;
-    background-color: var(--paleta1-light-blue);
+    
 }
 
 .new-msg-button {
-    background-color: var(--paleta1-light-blue);
+    background-color: var(--color-chat-button-bg);
 
-    font-size: var(--font-size);
+    border-radius: var(--border-radius);
     color: var(--paleta1-light-color);
-
+    padding: 0 16px;
     border: none;
-    border-radius: 0 0 .5rem 0;
+  
 
-    padding: .25rem 1rem;
 
     transition: ease-in-out 0.1s;
 }
