@@ -5,12 +5,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <textarea id="messages" style="width: 100vw; height: 50vh;"></textarea><br>
-    <input type="text" id="new-message">
-    <button id="send-message" disabled>Enviar Mensaje</button>
-    <script src="connection.js"></script>
+    <div class="container">
+        <textarea class="msg-box" id="messages" readonly></textarea><br>
+        <div class="new-msg-container">
+            <input class="new-msg" type="text" id="new-message">
+            <button class="new-msg-button" id="send-message" disabled>Enviar</button>
+        </div>
+        <script src="connection.js"></script>
+    </div>
 </body>
 </html>

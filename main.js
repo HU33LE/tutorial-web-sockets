@@ -1,7 +1,8 @@
 import { WebSocketServer } from "ws";
 import express from "express";
 import { Server } from "http";
-import { __dirname, generarId } from "./helpers";
+import path from "path";
+import { __dirname, generarId } from "./helpers.js";
 
 const PORT = 3000
 
