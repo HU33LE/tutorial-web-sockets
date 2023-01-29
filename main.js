@@ -45,7 +45,7 @@ function conectarCliente(cliente) {
         let mensaje = new Mensaje() 
         mensaje.accion = ERROR
         mensaje.data = "El username es obligatorio para conectarse"
-        cliente.send(mensaje)
+        cliente.send(mensaje.toString())
         return
     }
 
