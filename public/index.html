@@ -17,11 +17,10 @@
                 <input class="username" type="text" id="usuario" required>
                 <button class="connection" id="toggle-connection">Conectarse</button>
             </div>
-            <textarea style="display: none;" class="msg-box" id="messages" readonly></textarea><br>
             <div id="message-box"></div>
-            <div class="new-msg-container">
-                <input class="new-msg" type="text" id="new-message">
-                <button class="new-msg-button" id="send-message" disabled>Enviar</button>
+            <div class="new-msg-container disabled" id="new-message-container">
+                <input class="new-msg" type="text" id="new-message" disabled title="Primero debe conectarse">
+                <button class="new-msg-button" id="send-message" disabled title="Primero debe conectarse">Enviar</button>
             </div>
         </div>
         <script type="module" src="connection.js"></script>
