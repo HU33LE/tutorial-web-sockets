@@ -18,7 +18,7 @@ function registrarNuevoCliente(cliente) {
     cliente.id = generarId()
 
     clientes.forEach((_cliente) => {
-        _cliente.send(`${cliente.id} se ha unido a la conversación`)
+        _cliente.send(`${cliente.id.substring(0, 7)} se ha unido a la conversación`)
     })
 
     clientes.push(cliente)
@@ -31,7 +31,7 @@ function manejarMensajesNuevosDe(cliente) {
         clientes.filter((_cliente) => {
             return _cliente.id != cliente.id
         }).forEach((_cliente) => {
-            _cliente.send(`${cliente.id}: ${data}`)
+            _cliente.send(`${cliente.id.substring(0, 7)}: ${data}`)
         })
     }
 }
@@ -42,7 +42,7 @@ function retirarCliente(cliente) {
     })
 
     clientes.forEach((_cliente) => {
-        _cliente.send(`${cliente.id} ha abandonado el chat`)
+        _cliente.send(`${cliente.id.substring(0, 7)} ha abandonado el chat`)
     })
 }
 
@@ -51,7 +51,9 @@ socketServer.on('connection', (cliente) => {
 
     cliente.on("message", manejarMensajesNuevosDe(cliente))
 
-    cliente.on("close", retirarCliente)
+    cliente.on("close", () => {
+        retirarCliente(cliente)
+    })
 })
 
 app.use(express.static(path.join(__dirname, "./public")))

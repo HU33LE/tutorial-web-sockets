@@ -12,10 +12,12 @@
 </head>
 <body>
     <div class="container">
-        <textarea class="msg-box" id="messages" readonly></textarea><br>
-        <div class="new-msg-container">
-            <input class="new-msg" type="text" id="new-message">
-            <button class="new-msg-button" id="send-message" disabled>Enviar</button>
+        <div class="chat-wrapper">
+            <div id="message-box"></div>
+            <div class="new-msg-container" id="new-message-container">
+                <input class="new-msg" type="text" id="new-message">
+                <button class="new-msg-button" id="send-message" disabled>Enviar</button>
+            </div>
         </div>
         <script src="connection.js"></script>
     </div>
