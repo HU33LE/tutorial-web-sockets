@@ -61,7 +61,7 @@ function conectarCliente(cliente, nuevoCanal) {
         let mensaje = new Mensaje() 
         mensaje.accion = ERROR
         mensaje.data = "El username es obligatorio para conectarse"
-        cliente.send(mensaje)
+        cliente.send(mensaje.toString())
         return
     }
 
@@ -69,7 +69,7 @@ function conectarCliente(cliente, nuevoCanal) {
         let mensaje = new Mensaje() 
         mensaje.accion = ERROR
         mensaje.data = "El canal solicitado no existe"
-        cliente.send(mensaje)
+        cliente.send(mensaje.toString())
         return
     }
 
