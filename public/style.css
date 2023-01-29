@@ -56,34 +56,26 @@ body {
     top: 0;
     left: 0;
 
-
     background-color: var(--color-header-bg);
     display: flex;
     flex-direction: row;
     align-items: stretch;
     border-radius: var(--border-radius) var(--border-radius) 0 0;
     backdrop-filter: blur(4px);
-
 }
 
 .username {
     border-radius: var(--border-radius) 0 0 0;
-    border: none;
     flex-grow: 1;
-    border-right: solid 0.5rem var(--red-color);
 
+    border: none;
+    border-right: solid 1px var(--paleta1-dark-blue);
 
     background-color: transparent;
     padding: 0 1rem;
 
-    
-
     font-size: var(--font-size-small);
     color: var(--paleta1-light-color);
-}
-
-.username.connected {
-    border-right: solid 0.5rem var(--green-color);
 }
 
 .username:focus-visible {
@@ -94,8 +86,28 @@ body {
     -moz-box-shadow: none;
     box-shadow: none;
 
-
     background-color: var(--paleta1-light-blue);
+}
+
+.rooms {
+    border-radius: var(--border-radius) 0 0 0;
+    border: none;
+    flex-grow: 1;
+    border-right: solid 0.5rem var(--red-color);
+
+    background-color: transparent;
+    padding: 0 1rem;
+
+    font-size: var(--font-size-small);
+    color: var(--paleta1-light-color);
+}
+
+.rooms option {
+    color: var(--paleta1-dark-blue);
+}
+
+.rooms.connected {
+    border-right: solid 0.5rem var(--green-color);
 }
 
 .connection {
@@ -107,7 +119,7 @@ body {
 
 
     border: none;
-    border-radius: 0 .5rem 0 0;
+    border-radius: 0 var(--border-radius) 0 0;
 
     padding: 0 1rem;
 

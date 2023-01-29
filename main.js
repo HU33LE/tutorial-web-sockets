@@ -3,7 +3,7 @@ import { WebSocketServer } from "ws";
 import express from "express";
 import { Server } from "http";
 import { __dirname, generarId } from "./helpers.js";
-import { CONECTAR, DESCONECTAR, ENVIAR_MENSAJE, ERROR, ESTABLECER_USERNAME, Mensaje } from "./public/messages.js"
+import { CAMBIAR_CANAL, CONECTAR, DESCONECTAR, ENVIAR_MENSAJE, ERROR, ESTABLECER_USERNAME, Mensaje } from "./public/messages.js"
 
 const PORT = 3000
 
@@ -13,24 +13,40 @@ const socketServer = new WebSocketServer({
     server: server
 })
 
-let clientes = []
+const canales = {
+    "Canal 1": [],
+    "Canal 2": [],
+    "Canal 3": [],
+    "Canal 4": [],
+}
 
 function registrarNuevoCliente(cliente) {
     cliente.id = generarId()
     cliente.estaConectado = false
+    cliente.canal = ""
     return cliente
 }
 
 function enviarMensaje(cliente, contenido) {
     if (!cliente.estaConectado) {
-        let mensaje = new Mensaje() 
+        let mensaje = new Mensaje()
         mensaje.accion = ERROR
         mensaje.data = "Debe conectarse para enviar mensajes"
         cliente.send(mensaje.toString())
         return
     }
 
-    clientes.filter((_cliente) => {
+    if (cliente.canal == "") {
+        let mensaje = new Mensaje()
+        mensaje.accion = ERROR
+        mensaje.data = "El canal es incorrecto"
+        cliente.send(mensaje.toString())
+        return
+    }
+
+    const canal = canales[cliente.canal]
+
+    canal.filter((_cliente) => {
         return _cliente.id != cliente.id
     }).forEach((_cliente) => {
         let mensaje = new Mensaje() 
@@ -40,7 +56,7 @@ function enviarMensaje(cliente, contenido) {
     })
 }
 
-function conectarCliente(cliente) {
+function conectarCliente(cliente, nuevoCanal) {
     if (cliente.username == undefined) {
         let mensaje = new Mensaje() 
         mensaje.accion = ERROR
@@ -49,23 +65,45 @@ function conectarCliente(cliente) {
         return
     }
 
+    if (canales[nuevoCanal] == undefined) {
+        let mensaje = new Mensaje() 
+        mensaje.accion = ERROR
+        mensaje.data = "El canal solicitado no existe"
+        cliente.send(mensaje)
+        return
+    }
+
+    desconectarCliente(cliente)
+    
     cliente.estaConectado = true
-    clientes.forEach((_cliente) => {
+    cliente.canal = nuevoCanal
+
+    let canal = canales[nuevoCanal]
+
+    canal.forEach((_cliente) => {
         let mensaje = new Mensaje() 
         mensaje.accion = ENVIAR_MENSAJE
         mensaje.data = `El usuario ${cliente.username} se ha conectado`
         _cliente.send(mensaje.toString())
     })
-    clientes.push(cliente)
+    canal.push(cliente)
+
+    canales[nuevoCanal] = canal
 }
 
 function desconectarCliente(cliente) {
-    clientes = clientes.filter((_cliente) => {
+    if (cliente.canal == "") {
+        return
+    }
+
+    let canal = canales[cliente.canal]
+
+    canal = canal.filter((_cliente) => {
         return _cliente.id != cliente.id
     })
 
     if (cliente.estaConectado) {
-        clientes.forEach((_cliente) => {
+        canal.forEach((_cliente) => {
             let mensaje = new Mensaje() 
             mensaje.accion = ENVIAR_MENSAJE
             mensaje.data = `${cliente.username} ha abandonado el chat`
@@ -73,12 +111,20 @@ function desconectarCliente(cliente) {
         })
     }
 
+    canales[cliente.canal] = canal
+
     cliente.estaConectado = false
 }
 
 function establecerUsername(cliente, username) {
     if (cliente.estaConectado) {
-        clientes.filter((_cliente) => {
+        if (cliente.canal == "") {
+            return
+        }
+
+        const canal = canales[cliente.canal]
+
+        canal.filter((_cliente) => {
             return _cliente.id != cliente.id
         }).forEach((_cliente) => {
             let mensaje = new Mensaje() 
@@ -97,7 +143,12 @@ function manejarMensajesNuevosDe(cliente) {
 
         if (mensaje.realizarAccion(CONECTAR)) {
             establecerUsername(cliente, mensaje.data)
-            conectarCliente(cliente)
+            conectarCliente(cliente, mensaje.canal)
+            return
+        }
+
+        if (mensaje.realizarAccion(CAMBIAR_CANAL)) {
+            conectarCliente(cliente, mensaje.canal)
             return
         }
 
@@ -113,6 +164,7 @@ function manejarMensajesNuevosDe(cliente) {
 
         if (mensaje.realizarAccion(ESTABLECER_USERNAME)) {
             establecerUsername(cliente, mensaje.data)
+            return
         }
     }
 }

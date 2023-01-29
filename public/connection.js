@@ -1,4 +1,4 @@
-import { CONECTAR, DESCONECTAR, ENVIAR_MENSAJE, ESTABLECER_USERNAME, Mensaje } from "./messages.js"
+import { CONECTAR, DESCONECTAR, ENVIAR_MENSAJE, ESTABLECER_USERNAME, CAMBIAR_CANAL, Mensaje } from "./messages.js"
 
 const PORT = 3000
 const socket = new WebSocket(`ws://localhost:${PORT}`)
@@ -11,6 +11,7 @@ const botonEnviar  = document.getElementById("send-message")
 const botonConexion = document.getElementById("toggle-connection")
 const username = document.getElementById("usuario")
 const contenedorNuevoMensaje = document.getElementById("new-message-container")
+const canales = document.getElementById("rooms")
 
 function enviarMensaje() {
     if (!estaConectado || mensajeNuevo.value == "") {
@@ -37,6 +38,14 @@ function renderizarMensaje(mensaje, className) {
     cajaMensajes.appendChild(div);
 }
 
+function eliminarMensajes() {
+    let child = cajaMensajes.firstChild
+    while(child != undefined) {
+        child.remove()
+        child = cajaMensajes.firstChild
+    }
+}
+
 function generarUsername() {
     const aleatorio = Math.floor(Math.random() * 10000);
 
@@ -54,6 +63,26 @@ function cambiarUsername() {
 
     mensaje.accion = ESTABLECER_USERNAME
     mensaje.data = nuevoUsername
+
+    socket.send(mensaje.toString())
+}
+
+function cambiarCanal() {
+    if(!estaConectado) {
+        return
+    }
+
+    let mensaje = new Mensaje()
+
+    if (canales.value == "") {
+        return
+    }
+
+    mensaje.canal = canales.value
+    mensaje.accion = CAMBIAR_CANAL
+
+    eliminarMensajes()
+    renderizarMensaje(`Te has unido al canal "${mensaje.canal}"`, 'info')
 
     socket.send(mensaje.toString())
 }
@@ -76,16 +105,23 @@ function manejarConexion() {
         contenedorNuevoMensaje.classList.add("disabled")
 
         botonConexion.textContent = "Conectarse"
-        username.classList.remove("connected")
+        canales.classList.remove("connected")
     } else {
+        mensaje.accion = CONECTAR
+
         if (username.value == "") {
             return
         }
 
-        renderizarMensaje("Te has unido a la conversación", 'info')
+        if (canales.value == "") {
+            return
+        }
 
-        mensaje.accion = CONECTAR
         mensaje.data = username.value
+        mensaje.canal = canales.value
+
+        eliminarMensajes()
+        renderizarMensaje(`Te has unido al canal ${mensaje.canal}`, 'info')
 
         botonEnviar.disabled = false
         mensajeNuevo.disabled = false
@@ -96,7 +132,7 @@ function manejarConexion() {
         contenedorNuevoMensaje.classList.remove("disabled")
 
         botonConexion.textContent = "Desconectarse"
-        username.classList.add("connected")
+        canales.classList.add("connected")
     }
 
     estaConectado = !estaConectado
@@ -116,6 +152,8 @@ mensajeNuevo.addEventListener("keyup", (evt) => {
 username.addEventListener("blur", cambiarUsername)
 
 botonConexion.addEventListener("click", manejarConexion)
+
+canales.addEventListener("change", cambiarCanal)
 
 socket.addEventListener("message", (evt) => {
     const mensaje = new Mensaje(evt.data)
