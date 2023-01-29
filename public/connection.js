@@ -5,11 +5,12 @@ const socket = new WebSocket(`ws://localhost:${PORT}`)
 
 let estaConectado = false
 
-const cajaMensajes = document.getElementById("messages")
+const cajaMensajes = document.getElementById("message-box")
 const mensajeNuevo = document.getElementById("new-message")
 const botonEnviar  = document.getElementById("send-message")
 const botonConexion = document.getElementById("toggle-connection")
 const username = document.getElementById("usuario")
+const contenedorNuevoMensaje = document.getElementById("new-message-container")
 
 function enviarMensaje() {
     if (!estaConectado || mensajeNuevo.value == "") {
@@ -24,11 +25,16 @@ function enviarMensaje() {
     socket.send(mensaje.toString())
 
     mensajeNuevo.value = ""
-    renderizarMensaje(`Tú: ${contenido}`)
+    renderizarMensaje(`${contenido}`, 'self')
 }
 
-function renderizarMensaje(mensaje) {
-    cajaMensajes.value += `${mensaje}\n`
+function renderizarMensaje(mensaje, className) {
+    const p = document.createElement('p');
+    const div = document.createElement('div');
+    p.innerText = mensaje;
+    div.appendChild(p);
+    div.classList.add(className,'message');
+    cajaMensajes.appendChild(div);
 }
 
 function generarUsername() {
@@ -58,8 +64,17 @@ function manejarConexion() {
     if (estaConectado) {
         mensaje.accion = DESCONECTAR
 
-        renderizarMensaje("Has abandonado la conversación")
+        renderizarMensaje("Has abandonado la conversación", 'info')
+
         botonEnviar.disabled = true
+        mensajeNuevo.disabled = true
+
+        botonEnviar.title = "Primero debe conectarse"
+        mensajeNuevo.title = "Primero debe conectarse"
+        mensajeNuevo.value = ""
+
+        contenedorNuevoMensaje.classList.add("disabled")
+
         botonConexion.textContent = "Conectarse"
         username.classList.remove("connected")
     } else {
@@ -67,10 +82,19 @@ function manejarConexion() {
             return
         }
 
+        renderizarMensaje("Te has unido a la conversación", 'info')
+
         mensaje.accion = CONECTAR
         mensaje.data = username.value
 
         botonEnviar.disabled = false
+        mensajeNuevo.disabled = false
+
+        botonEnviar.title = ""
+        mensajeNuevo.title = ""
+
+        contenedorNuevoMensaje.classList.remove("disabled")
+
         botonConexion.textContent = "Desconectarse"
         username.classList.add("connected")
     }
@@ -95,7 +119,7 @@ botonConexion.addEventListener("click", manejarConexion)
 
 socket.addEventListener("message", (evt) => {
     const mensaje = new Mensaje(evt.data)
-    renderizarMensaje(mensaje.data)
+    renderizarMensaje(mensaje.data, 'other')
 })
 
 generarUsername()
